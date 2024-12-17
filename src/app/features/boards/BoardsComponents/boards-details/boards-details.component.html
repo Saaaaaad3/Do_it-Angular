@@ -1,14 +1,18 @@
 <div class="board-detail-container">
-  <h1>Board ID: {{ boardId }}</h1>
-
   <button (click)="addNewList()">+ Add New List</button>
 
-  <div class="list-container">
-    <div class="list-card" *ngFor="let list of lists">
+  <div class="list-container" cdkDropListGroup>
+    <div
+      class="list-card"
+      *ngFor="let list of lists"
+      cdkDropList
+      [cdkDropListData]="list.cards"
+      (cdkDropListDropped)="onCardDrop($event, list)"
+    >
       <h2>{{ list.title }}</h2>
 
       <div class="card-list">
-        <div class="card-item" *ngFor="let card of list.cards">
+        <div class="card-item" *ngFor="let card of list.cards" cdkDrag>
           {{ card.title }}
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 interface Board {
   id: number;
