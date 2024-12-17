@@ -1,1 +1,15 @@
-<p>boards works!</p>
+<div class="boards-container">
+  <h1>My Boards</h1>
+
+  <button (click)="addNewBoard()">+ Add New Board</button>
+
+  <div class="board-list">
+    <div
+      class="board-card"
+      *ngFor="let board of boards"
+      (click)="viewBoard(board.id)"
+    >
+      <h2>{{ board.title }}</h2>
+    </div>
+  </div>
+</div>

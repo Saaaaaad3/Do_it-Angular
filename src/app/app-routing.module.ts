@@ -27,6 +27,15 @@ const routes: Routes = [
     loadChildren: () =>
       import('./features/user/user.module').then((m) => m.UserModule),
   },
+  {
+    path: '',
+    redirectTo: 'boards',
+    pathMatch: 'full',
+  },
+  {
+    path: '**',
+    redirectTo: 'boards',
+  },
 ];
 
 @NgModule({

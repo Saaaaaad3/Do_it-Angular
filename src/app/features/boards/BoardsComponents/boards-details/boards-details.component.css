@@ -1,0 +1,58 @@
+.board-detail-container {
+  padding: 20px;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.list-container {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+}
+
+.list-card {
+  width: 200px;
+  background-color: #28a745;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.list-card h2 {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.card-list {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.card-item {
+  background-color: #fff;
+  color: #000;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

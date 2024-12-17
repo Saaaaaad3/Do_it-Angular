@@ -1,0 +1,19 @@
+<div class="board-detail-container">
+  <h1>Board ID: {{ boardId }}</h1>
+
+  <button (click)="addNewList()">+ Add New List</button>
+
+  <div class="list-container">
+    <div class="list-card" *ngFor="let list of lists">
+      <h2>{{ list.title }}</h2>
+
+      <div class="card-list">
+        <div class="card-item" *ngFor="let card of list.cards">
+          {{ card.title }}
+        </div>
+      </div>
+
+      <button (click)="addNewCard(list.id)">+ Add New Card</button>
+    </div>
+  </div>
+</div>
