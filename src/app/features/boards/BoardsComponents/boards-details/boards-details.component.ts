@@ -90,6 +90,17 @@ export class BoardsDetailsComponent implements OnInit {
     this.lists = this.lists.filter((list) => list.id !== listId);
   }
 
+  editCardTitle(card: Card) {
+    card.isEditing = true;
+  }
+
+  saveEditedCardTitle(card: Card) {
+    card.isEditing = false;
+  }
+  cancelCardEdit(card: Card) {
+    card.isEditing = false;
+  }
+
   deleteCard(listId: number, cardId: number) {
     const list = this.lists.find((list) => list.id === listId);
     if (list) {

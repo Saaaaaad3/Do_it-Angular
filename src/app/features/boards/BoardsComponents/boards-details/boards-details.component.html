@@ -21,8 +21,24 @@
       />
 
       <div class="card-list">
-        <div class="card-item" *ngFor="let card of list.cards" cdkDrag>
-          {{ card.title }}
+        <div
+          class="card-item"
+          *ngFor="let card of list.cards"
+          cdkDrag
+          [cdkDragDisabled]="card.isEditing"
+        >
+          <span *ngIf="!card.isEditing" (click)="editCardTitle(card)"
+            >{{ card.title }}
+          </span>
+          <input
+            *ngIf="card.isEditing"
+            [(ngModel)]="card.title"
+            (blur)="saveEditedCardTitle(card)"
+            (keydown.enter)="saveEditedCardTitle(card)"
+            (keydown.enter)="cancelCardEdit(card)"
+            placeholder="Enter Task"
+            autofocus
+          />
           <button (click)="deleteCard(list.id, card.id)">🗑️</button>
         </div>
       </div>
