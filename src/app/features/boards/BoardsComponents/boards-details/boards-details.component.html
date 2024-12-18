@@ -9,15 +9,59 @@
       [cdkDropListData]="list.cards"
       (cdkDropListDropped)="onCardDrop($event, list)"
     >
-      <h2>{{ list.title }}</h2>
+      <div *ngIf="!isEditingList[list.id]" (click)="editListTitle(list.id)">
+        <h2>{{ list.title }}</h2>
+        <button (click)="deleteList(list.id)">🗑️</button>
+      </div>
+      <input
+        *ngIf="isEditingList[list.id]"
+        [(ngModel)]="list.title"
+        (keydown.enter)="stopEditingListTtitle(list.id)"
+        (keydown.escape)="cancelEditingListTitle(list.id)"
+      />
 
       <div class="card-list">
-        <div class="card-item" *ngFor="let card of list.cards" cdkDrag>
-          {{ card.title }}
+        <div
+          class="card-item"
+          *ngFor="let card of list.cards"
+          cdkDrag
+          [cdkDragDisabled]="card.isEditing"
+        >
+          <span *ngIf="!card.isEditing" (click)="editCardTitle(card)"
+            >{{ card.title }}
+          </span>
+          <input
+            *ngIf="card.isEditing"
+            [(ngModel)]="card.title"
+            (blur)="saveEditedCardTitle(card)"
+            (keydown.enter)="saveEditedCardTitle(card)"
+            (keydown.enter)="cancelCardEdit(card)"
+            placeholder="Enter Task"
+            autofocus
+          />
+          <button (click)="deleteCard(list.id, card.id)">🗑️</button>
         </div>
       </div>
 
-      <button (click)="addNewCard(list.id)">+ Add New Card</button>
+      <div class="add-card-container">
+        <button
+          *ngIf="!showAddCardInput[list.id]"
+          (click)="toggleAddCardInput(list.id)"
+        >
+          + Add New Card
+        </button>
+
+        <div *ngIf="showAddCardInput[list.id]">
+          <input
+            [(ngModel)]="newCardTitle"
+            (keydown.enter)="addNewCard(list.id)"
+            (keydown.escape)="cancelAddCard(list.id)"
+            placeholder="Enter card title"
+          />
+          <button (click)="addNewCard(list.id)">Add</button>
+          <button (click)="cancelAddCard(list.id)">Cancel</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
