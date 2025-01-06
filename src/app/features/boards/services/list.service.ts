@@ -37,17 +37,48 @@ export class ListService {
     return this.lists$;
   }
 
-  addCard(listId: number, title: string) {
-    const currentLists = this.listSubject.value;
-    const updatedLists = currentLists.map((list) =>
-      list.id === listId
-        ? {
-            ...list,
-            cards: [...list.cards, { id: list.cards.length + 1, title }],
-          }
-        : list
-    );
+  addList(title: string) {
+    console.log('list adding');
+    const currentLists = this.listSubject.getValue();
+    const newList: List = { id: currentLists.length + 1, title, cards: [] };
+    this.listSubject.next([...currentLists, newList]);
+    console.log(this.lists$);
+  }
+
+  deleteList(listId: number) {
+    const currentLists = this.listSubject.getValue();
+    const updatedLists = currentLists.filter((list) => list.id !== listId);
     this.listSubject.next(updatedLists);
+  }
+
+  addCard(listId: number, title: string) {
+    const currentLists = this.listSubject.getValue();
+    const list = currentLists.find((list) => list.id === listId);
+
+    if (list) {
+      const newCard: Card = { id: list.cards.length + 1, title };
+      list.cards.push(newCard);
+      this.listSubject.next([...currentLists]);
+    }
+    // const currentLists = this.listSubject.value;
+    // const updatedLists = currentLists.map((list) =>
+    //   list.id === listId
+    //     ? {
+    //         ...list,
+    //         cards: [...list.cards, { id: list.cards.length + 1, title }],
+    //       }
+    //     : list
+    // );
+    // this.listSubject.next(updatedLists);
+  }
+
+  deleteCard(listId: number, cardId: number) {
+    const currentLists = this.listSubject.getValue();
+    const list = currentLists.find((list) => list?.id === listId);
+    if (list) {
+      list.cards = list.cards.filter((card) => card.id !== cardId);
+      this.listSubject.next([...currentLists]);
+    }
   }
 
   moveCard(cardId: number, sourceListId: number, targetListId: number) {

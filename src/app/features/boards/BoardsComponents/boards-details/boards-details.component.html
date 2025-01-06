@@ -4,21 +4,23 @@
   <div class="list-container" cdkDropListGroup>
     <div
       class="list-card"
-      *ngFor="let list of lists"
+      *ngFor="let list of lists$ | async"
       cdkDropList
       [cdkDropListData]="list.cards"
       (cdkDropListDropped)="onCardDrop($event, list)"
     >
       <div *ngIf="!isEditingList[list.id]" (click)="editListTitle(list.id)">
         <h2>{{ list.title }}</h2>
-        <button (click)="deleteList(list.id)">🗑️</button>
       </div>
       <input
         *ngIf="isEditingList[list.id]"
         [(ngModel)]="list.title"
-        (keydown.enter)="stopEditingListTtitle(list.id)"
+        (keydown.enter)="stopEditingListTitle(list.id)"
         (keydown.escape)="cancelEditingListTitle(list.id)"
+        (blur)="cancelEditingListTitle(list.id)"
+        autofocus
       />
+      <button (click)="deleteList(list.id)">🗑️</button>
 
       <div class="card-list">
         <div
