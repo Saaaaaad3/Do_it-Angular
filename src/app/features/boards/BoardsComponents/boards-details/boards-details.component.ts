@@ -6,6 +6,7 @@ import {
   transferArrayItem,
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
+import { Observable, withLatestFrom } from 'rxjs';
 
 @Component({
   selector: 'app-boards-details',
@@ -14,53 +15,79 @@ import {
   styleUrl: './boards-details.component.css',
 })
 export class BoardsDetailsComponent implements OnInit {
+  lists$!: Observable<List[]>;
+
+  constructor(private listService: ListService) {
+    this.lists$ = this.listService.lists$;
+  }
+
   boardId!: number;
   newCardTitle!: string;
 
   showAddCardInput: { [key: number]: boolean } = {};
   isEditingList: { [key: number]: boolean } = {};
 
-  lists: List[] = [];
-
-  constructor(private listService: ListService) {}
-
   ngOnInit(): void {
-    this.listService.getLists().subscribe((lists) => (this.lists = lists));
+    this.lists$ = this.listService.lists$;
   }
 
   addNewList(): void {
-    const newId = this.lists.length + 1;
-    this.lists.push({ id: newId, title: `New List ${newId}`, cards: [] });
+    const title = prompt('Enter List Title');
+    if (title) {
+      console.log('list adding ' + title);
+      this.listService.addList(title);
+    }
+    // const newId = this.lists.length + 1;
+    // this.lists.push({ id: newId, title: `New List ${newId}`, cards: [] });
+  }
+
+  deleteList(listId: number) {
+    // const confirmDelete = prompt('Are you sure you want to delete this list?');
+    // if(confirmDelete)
+    this.listService.deleteList(listId);
+    // this.lists = this.lists.filter((list) => list.id !== listId);
   }
 
   addNewCard(listId: number) {
-    if (!this.newCardTitle.trim()) return;
-    const newCard: Card = { id: Date.now(), title: this.newCardTitle.trim() };
-    const list = this.lists.find((l) => l.id === listId);
-    list?.cards.push(newCard);
-    this.cancelAddCard(listId);
+    const title = prompt('Enter Card Title');
+    if (title) {
+      this.listService.addCard(listId, title);
+    }
+    // if (!this.newCardTitle.trim()) return;
+    // const newCard: Card = { id: Date.now(), title: this.newCardTitle.trim() };
+    // const list = this.lists.find((l) => l.id === listId);
+    // list?.cards.push(newCard);
+    // this.cancelAddCard(listId);
+  }
+
+  deleteCard(listId: number, cardId: number) {
+    // const confirmDelete = prompt("Are you sure you want to delete this card?");
+    // if(confirmDelete)
+    this.listService.deleteCard(listId, cardId);
   }
 
   onCardDrop(event: CdkDragDrop<Card[]>, targetList: List) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(
-        targetList.cards,
-        event.previousIndex,
-        event.currentIndex
-      );
-    } else {
-      const sourceList = this.lists.find(
-        (list) => list.cards === event.previousContainer.data
-      );
-      if (sourceList) {
-        transferArrayItem(
-          event.previousContainer.data,
-          event.container.data,
+    this.lists$.pipe(withLatestFrom()).subscribe(([lists]) => {
+      if (event.previousContainer === event.container) {
+        moveItemInArray(
+          targetList.cards,
           event.previousIndex,
           event.currentIndex
         );
+      } else {
+        const sourceList = lists.find(
+          (list) => list.cards === event.previousContainer.data
+        );
+        if (sourceList) {
+          transferArrayItem(
+            event.previousContainer.data,
+            event.container.data,
+            event.previousIndex,
+            event.currentIndex
+          );
+        }
       }
-    }
+    });
   }
 
   cancelAddCard(listId: number) {
@@ -81,13 +108,9 @@ export class BoardsDetailsComponent implements OnInit {
     // discard the newly typed stuff
   }
 
-  stopEditingListTtitle(ListId: number) {
+  stopEditingListTitle(ListId: number) {
     this.isEditingList[ListId] = false;
     // change the list name with newly types stuff
-  }
-
-  deleteList(listId: number) {
-    this.lists = this.lists.filter((list) => list.id !== listId);
   }
 
   editCardTitle(card: Card) {
@@ -99,12 +122,5 @@ export class BoardsDetailsComponent implements OnInit {
   }
   cancelCardEdit(card: Card) {
     card.isEditing = false;
-  }
-
-  deleteCard(listId: number, cardId: number) {
-    const list = this.lists.find((list) => list.id === listId);
-    if (list) {
-      list.cards = list?.cards.filter((cards) => cards.id !== cardId);
-    }
   }
 }
