@@ -9,6 +9,7 @@
       *ngFor="let board of boards"
       (click)="viewBoard(board.id)"
     >
+      <button (click)="RemoveBoard(board.id)">X</button>
       <h2>{{ board.title }}</h2>
     </div>
   </div>
