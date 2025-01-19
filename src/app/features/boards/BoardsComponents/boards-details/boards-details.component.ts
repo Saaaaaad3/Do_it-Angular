@@ -16,6 +16,7 @@ import { Observable, withLatestFrom } from 'rxjs';
 })
 export class BoardsDetailsComponent implements OnInit {
   lists$!: Observable<List[]>;
+  lists: List[] = [];
 
   constructor(private listService: ListService) {
     this.lists$ = this.listService.lists$;
@@ -28,7 +29,10 @@ export class BoardsDetailsComponent implements OnInit {
   isEditingList: { [key: number]: boolean } = {};
 
   ngOnInit(): void {
-    this.lists$ = this.listService.lists$;
+    this.listService.getLists().subscribe((lists) => {
+      this.lists = lists;
+    });
+    // this.lists$ = this.listService.lists$;
   }
 
   addNewList(): void {
@@ -67,28 +71,52 @@ export class BoardsDetailsComponent implements OnInit {
   }
 
   onCardDrop(event: CdkDragDrop<Card[]>, targetList: List) {
-    this.lists$.pipe(withLatestFrom()).subscribe(([lists]) => {
-      if (event.previousContainer === event.container) {
-        moveItemInArray(
-          targetList.cards,
+    if (event.previousContainer === event.container) {
+      // Moving within the same list
+      moveItemInArray(
+        targetList.cards,
+        event.previousIndex,
+        event.currentIndex
+      );
+    } else {
+      const sourceList = this.lists.find(
+        (list) => list.cards === event.previousContainer.data
+      );
+      // Moving across lists
+      if (sourceList) {
+        transferArrayItem(
+          event.previousContainer.data,
+          event.container.data,
           event.previousIndex,
           event.currentIndex
         );
-      } else {
-        const sourceList = lists.find(
-          (list) => list.cards === event.previousContainer.data
-        );
-        if (sourceList) {
-          transferArrayItem(
-            event.previousContainer.data,
-            event.container.data,
-            event.previousIndex,
-            event.currentIndex
-          );
-        }
       }
-    });
+    }
   }
+
+  // onCardDrop(event: CdkDragDrop<Card[]>, targetList: List) {
+  //   this.lists$.pipe(withLatestFrom()).subscribe(([lists]) => {
+  //     if (event.previousContainer === event.container) {
+  //       moveItemInArray(
+  //         targetList.cards,
+  //         event.previousIndex,
+  //         event.currentIndex
+  //       );
+  //     } else {
+  //       // const sourceList = lists.find(
+  //       //   (list) => list.cards === event.previousContainer.data
+  //       // );
+  //       // if (sourceList) {
+  //       transferArrayItem(
+  //         event.previousContainer.data,
+  //         event.container.data,
+  //         event.previousIndex,
+  //         event.currentIndex
+  //       );
+  //       // }
+  //     }
+  //   });
+  // }
 
   cancelAddCard(listId: number) {
     this.showAddCardInput[listId] = false;

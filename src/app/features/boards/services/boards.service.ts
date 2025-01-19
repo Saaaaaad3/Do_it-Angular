@@ -20,10 +20,11 @@ export class BoardsService {
 
   boards: Board[] = [];
 
-  getAllBoards(): Observable<Board[]> {
+  getAllBoards(UserId: Number): Observable<Board[]> {
     return this.httpClient
       .get<Board[]>(
-        'https://localhost:44318/api/Boards/GetAllBoardsByUserId?UserId=1'
+        'https://localhost:44318/api/Boards/GetAllBoardsByUserId?UserId=' +
+          UserId
       )
       .pipe(
         map((response: any) => {

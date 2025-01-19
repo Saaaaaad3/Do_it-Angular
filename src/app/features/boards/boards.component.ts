@@ -29,7 +29,7 @@ export class BoardsComponent implements OnInit {
     //   { id: 4, title: 'Azure' },
     //   { id: 5, title: 'AI Features!' },
     // ];
-    this.boardsService.getAllBoards().subscribe((data: Board[]) => {
+    this.boardsService.getAllBoards(1).subscribe((data: Board[]) => {
       this.boards = data;
       console.log(this.boards);
     });
