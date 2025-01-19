@@ -4,66 +4,20 @@
   <div class="list-container" cdkDropListGroup>
     <div
       class="list-card"
-      *ngFor="let list of lists$ | async"
+      *ngFor="let list of lists"
       cdkDropList
       [cdkDropListData]="list.cards"
       (cdkDropListDropped)="onCardDrop($event, list)"
     >
-      <div *ngIf="!isEditingList[list.id]" (click)="editListTitle(list.id)">
-        <h2>{{ list.title }}</h2>
-      </div>
-      <input
-        *ngIf="isEditingList[list.id]"
-        [(ngModel)]="list.title"
-        (keydown.enter)="stopEditingListTitle(list.id)"
-        (keydown.escape)="cancelEditingListTitle(list.id)"
-        (blur)="cancelEditingListTitle(list.id)"
-        autofocus
-      />
-      <button (click)="deleteList(list.id)">🗑️</button>
+      <h2>{{ list.title }}</h2>
 
       <div class="card-list">
-        <div
-          class="card-item"
-          *ngFor="let card of list.cards"
-          cdkDrag
-          [cdkDragDisabled]="card.isEditing"
-        >
-          <span *ngIf="!card.isEditing" (click)="editCardTitle(card)"
-            >{{ card.title }}
-          </span>
-          <input
-            *ngIf="card.isEditing"
-            [(ngModel)]="card.title"
-            (blur)="saveEditedCardTitle(card)"
-            (keydown.enter)="saveEditedCardTitle(card)"
-            (keydown.enter)="cancelCardEdit(card)"
-            placeholder="Enter Task"
-            autofocus
-          />
-          <button (click)="deleteCard(list.id, card.id)">🗑️</button>
+        <div class="card-item" *ngFor="let card of list.cards" cdkDrag>
+          {{ card.title }}
         </div>
       </div>
 
-      <div class="add-card-container">
-        <button
-          *ngIf="!showAddCardInput[list.id]"
-          (click)="toggleAddCardInput(list.id)"
-        >
-          + Add New Card
-        </button>
-
-        <div *ngIf="showAddCardInput[list.id]">
-          <input
-            [(ngModel)]="newCardTitle"
-            (keydown.enter)="addNewCard(list.id)"
-            (keydown.escape)="cancelAddCard(list.id)"
-            placeholder="Enter card title"
-          />
-          <button (click)="addNewCard(list.id)">Add</button>
-          <button (click)="cancelAddCard(list.id)">Cancel</button>
-        </div>
-      </div>
+      <button (click)="addNewCard(list.id)">+ Add New Card</button>
     </div>
   </div>
 </div>
